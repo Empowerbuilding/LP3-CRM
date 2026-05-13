@@ -284,7 +284,8 @@ export function NotesSection({
         <div className="space-y-3">
           {notes.map((note) => {
             const isEditing = editingId === note.id
-            const isOwner = currentUserId && note.created_by === currentUserId
+            // Show edit/delete for owner, or for anyone when no auth system is active
+            const isOwner = !currentUserId || note.created_by === currentUserId
             const isDeleting = deletingId === note.id
 
             return (
