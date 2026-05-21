@@ -8,9 +8,9 @@ import type { ContactWithCompany } from './page'
 import { ContactSlideOver } from './contact-slide-over'
 
 const LEAD_SOURCES: LeadSource[] = [
-  'cost_calculator',
-  'pdf_download',
-  'contact_form',
+  'website_estimate',
+  'phone_call',
+  'referral',
   'facebook_ad',
   'phone_call',
   'email',
@@ -19,13 +19,13 @@ const LEAD_SOURCES: LeadSource[] = [
 ]
 
 const LEAD_SOURCE_LABELS: Record<LeadSource, string> = {
-  cost_calculator: 'Cost Calculator',
-  pdf_download: 'PDF Download',
-  contact_form: 'Contact Form',
+  website_estimate: 'Website Estimate',
+  google_ads: 'Google Ads',
+  referral: 'Referral',
   facebook_ad: 'Facebook Ad',
   phone_call: 'Direct Phone Call',
   email: 'Direct Email',
-  calendar_booking: 'Calendar Booking',
+  storm_lead: 'Storm Lead',
   other: 'Other',
 }
 

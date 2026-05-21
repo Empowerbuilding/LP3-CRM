@@ -16,13 +16,13 @@ import { LeadScoreBadge } from './lead-score-badge'
 export const dynamic = 'force-dynamic'
 
 const LEAD_SOURCE_LABELS: Record<string, string> = {
-  cost_calculator: 'Cost Calculator',
-  pdf_download: 'PDF Download',
-  contact_form: 'Contact Form',
+  website_estimate: 'Website Estimate',
+  google_ads: 'Google Ads',
+  referral: 'Referral',
   facebook_ad: 'Facebook Ad',
   phone_call: 'Direct Phone Call',
   email: 'Direct Email',
-  calendar_booking: 'Calendar Booking',
+  storm_lead: 'Storm Lead',
   other: 'Other',
 }
 

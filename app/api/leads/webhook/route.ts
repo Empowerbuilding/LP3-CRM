@@ -41,9 +41,9 @@ function getLifecycleStageForSource(source: LeadSource): LifecycleStage {
 // These sources are typically consumer/homeowner leads
 function getClientTypeForSource(source: LeadSource): 'consumer' | null {
   const consumerSources: LeadSource[] = [
-    'cost_calculator',
-    'pdf_download',
-    'contact_form',
+    'website_estimate',
+    'phone_call',
+    'referral',
     'facebook_ad',
   ]
   return consumerSources.includes(source) ? 'consumer' : null
@@ -322,7 +322,7 @@ function formatContactNotes(source: LeadSource, metadata?: Record<string, unknow
   if (phone) lines.push(`Phone: ${phone}`)
 
   // Handle cost calculator specific fields
-  if (source === 'cost_calculator') {
+  if (source === 'website_estimate') {
     // Build project summary line
     const projectParts: string[] = []
     if (metadata.bedrooms) projectParts.push(`${metadata.bedrooms}BR`)
@@ -401,9 +401,9 @@ function formatKey(key: string): string {
 // Helper to format source for deal title and notes
 function formatSource(source: string): string {
   const sourceMap: Record<string, string> = {
-    cost_calculator: 'Cost Calculator',
-    pdf_download: 'PDF Download',
-    contact_form: 'Contact Form',
+    website_estimate: 'Website Estimate',
+    google_ads: 'Google Ads',
+    referral: 'Referral',
     facebook_ad: 'Facebook Ad',
     phone_call: 'Direct Phone Call',
     email: 'Direct Email',
