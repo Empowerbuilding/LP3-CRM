@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Privacy Policy - Modern Dwellings',
-  description: 'Privacy Policy for Modern Dwellings CRM',
+  title: 'Privacy Policy - LP3 Roofing',
+  description: 'Privacy Policy for LP3 Roofing CRM',
 }
 
 export default function PrivacyPolicyPage() {
@@ -24,7 +24,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Company Information</h2>
             <p>
-              This Privacy Policy applies to the services provided by <strong>Modern Dwellings</strong>.
+              This Privacy Policy applies to the services provided by <strong>LP3 Roofing</strong>.
             </p>
             <p className="mt-2">
               Contact Email: <a href="mailto:info@moderndwellings.com" className="text-brand-600 hover:underline">info@moderndwellings.com</a>
@@ -140,7 +140,7 @@ export default function PrivacyPolicyPage() {
               If you have any questions about this Privacy Policy, please contact us at:
             </p>
             <p className="mt-2">
-              <strong>Modern Dwellings</strong><br />
+              <strong>LP3 Roofing</strong><br />
               Email: <a href="mailto:info@moderndwellings.com" className="text-brand-600 hover:underline">info@moderndwellings.com</a>
             </p>
           </section>

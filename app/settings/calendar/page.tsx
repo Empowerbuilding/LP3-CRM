@@ -531,7 +531,7 @@ export default function CalendarSettingsPage() {
                 <p className="text-xs text-gray-500 mb-2">Opens booking in a modal overlay:</p>
                 <pre className="text-xs bg-gray-50 p-3 rounded-lg text-gray-700 overflow-x-auto whitespace-pre-wrap">
 {`<script src="https://crm.moderndwellings.com/booking-widget.js"></script>
-<button onclick="ModernDwellingsBooking.open('${meetingTypes[0]?.slug || 'your-slug'}')">
+<button onclick="LP3RoofingBooking.open('${meetingTypes[0]?.slug || 'your-slug'}')">
   Schedule a Call
 </button>`}
                 </pre>
@@ -545,7 +545,7 @@ export default function CalendarSettingsPage() {
 {`<div id="booking-container"></div>
 <script src="https://crm.moderndwellings.com/booking-widget.js"></script>
 <script>
-  ModernDwellingsBooking.render('${meetingTypes[0]?.slug || 'your-slug'}', '#booking-container');
+  LP3RoofingBooking.render('${meetingTypes[0]?.slug || 'your-slug'}', '#booking-container');
 </script>`}
                 </pre>
               </div>
@@ -555,7 +555,7 @@ export default function CalendarSettingsPage() {
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Advanced Options</h3>
                 <p className="text-xs text-gray-500 mb-2">Callbacks for booking events:</p>
                 <pre className="text-xs bg-gray-50 p-3 rounded-lg text-gray-700 overflow-x-auto whitespace-pre-wrap">
-{`ModernDwellingsBooking.open('${meetingTypes[0]?.slug || 'your-slug'}', {
+{`LP3RoofingBooking.open('${meetingTypes[0]?.slug || 'your-slug'}', {
   onBooked: function(meeting) {
     console.log('Booked:', meeting);
     // Track conversion, show thank you, etc.

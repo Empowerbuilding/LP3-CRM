@@ -12,8 +12,8 @@ import type { User } from '@/lib/types'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'CRM Dashboard',
-  description: 'Design and Construction CRM',
+  title: 'LP3 Roofing CRM',
+  description: 'LP3 Roofing CRM',
 }
 
 export default async function RootLayout({

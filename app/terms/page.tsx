@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Terms of Service - Modern Dwellings',
-  description: 'Terms of Service for Modern Dwellings CRM',
+  title: 'Terms of Service - LP3 Roofing',
+  description: 'Terms of Service for LP3 Roofing CRM',
 }
 
 export default function TermsOfServicePage() {
@@ -24,14 +24,14 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Acceptance of Terms</h2>
             <p>
-              By accessing and using the Modern Dwellings CRM service (&quot;Service&quot;), you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.
+              By accessing and using the LP3 Roofing CRM service (&quot;Service&quot;), you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">2. Description of Service</h2>
             <p>
-              Modern Dwellings provides a customer relationship management (CRM) platform designed for construction, design, and building businesses. The Service includes:
+              LP3 Roofing provides a customer relationship management (CRM) platform designed for construction, design, and building businesses. The Service includes:
             </p>
             <ul className="list-disc list-inside mt-2 space-y-1">
               <li>Contact and lead management</li>
@@ -88,7 +88,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">7. Intellectual Property</h2>
             <p>
-              The Service and its original content, features, and functionality are owned by Modern Dwellings and are protected by international copyright, trademark, and other intellectual property laws.
+              The Service and its original content, features, and functionality are owned by LP3 Roofing and are protected by international copyright, trademark, and other intellectual property laws.
             </p>
           </section>
 
@@ -105,7 +105,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Indemnification</h2>
             <p>
-              You agree to indemnify and hold harmless Modern Dwellings, and their officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses arising out of your use of the Service or violation of these Terms.
+              You agree to indemnify and hold harmless LP3 Roofing, and their officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses arising out of your use of the Service or violation of these Terms.
             </p>
           </section>
 
@@ -136,7 +136,7 @@ export default function TermsOfServicePage() {
               If you have any questions about these Terms, please contact us at:
             </p>
             <p className="mt-2">
-              <strong>Modern Dwellings</strong><br />
+              <strong>LP3 Roofing</strong><br />
               Email: <a href="mailto:info@moderndwellings.com" className="text-brand-600 hover:underline">info@moderndwellings.com</a>
             </p>
           </section>

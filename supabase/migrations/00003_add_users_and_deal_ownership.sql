@@ -30,6 +30,6 @@ CREATE INDEX idx_deals_owner_id ON deals(owner_id);
 -- Seed test users
 -- ============================================
 INSERT INTO users (id, email, name, role) VALUES
-  ('11111111-1111-1111-1111-111111111111', 'mitchell@empowerbuilding.ai', 'Mitchell Madison', 'sales'),
-  ('22222222-2222-2222-2222-222222222222', 'larry@empowerbuilding.ai', 'Larry Madison', 'sales')
+  ('11111111-1111-1111-1111-111111111111', 'mitchell@empowerbuilding.ai', 'Mitchell Madison', 'admin'),
+  ('22222222-2222-2222-2222-222222222222', 'lp3owner@lp3roofing.com', 'LP3 Owner', 'sales')
 ON CONFLICT (email) DO NOTHING;

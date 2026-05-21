@@ -212,7 +212,8 @@ export async function POST(request: NextRequest) {
         anonymous_id: payload.anonymous_id || null,
       })
 
-      // Fire initial_lead Facebook event for new contacts
+      // Fire initial_lead Facebook event for new contacts (only if CAPI is configured)
+      if (process.env.FACEBOOK_PIXEL_ID && process.env.FACEBOOK_CONVERSIONS_API_TOKEN) {
       try {
         console.log(`[${timestamp}] Sending initial_lead event to Facebook for new contact: ${contactId}`)
 
@@ -254,6 +255,7 @@ export async function POST(request: NextRequest) {
         console.error(`[${timestamp}] Facebook initial_lead event error (non-fatal):`, fbError)
         // Don't fail the webhook if FB event fails
       }
+      } // end CAPI guard
     }
 
     // Link any anonymous activities to this contact

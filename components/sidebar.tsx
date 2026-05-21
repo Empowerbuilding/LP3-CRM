@@ -119,7 +119,7 @@ export function Sidebar() {
       >
         {/* Logo */}
         <div className="h-16 flex items-center justify-center px-4 border border-slate-800 bg-white relative">
-          <span className="text-lg font-bold text-slate-800 tracking-tight">Modern Dwellings</span>
+          <span className="text-lg font-bold text-slate-800 tracking-tight">LP3 Roofing</span>
           {/* Mobile close button */}
           <button
             onClick={() => setMobileOpen(false)}

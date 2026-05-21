@@ -1,47 +1,62 @@
 // Enum types matching your business domain
 export type ClientType = 'builder' | 'consumer' | 'subcontractor' | 'engineer' | 'architect' | 'realtor'
 
-export type DealType = 'new_construction' | 'remodel' | 'addition'
+export type DealType = 'insurance_claim' | 'retail_cash' | 'financing' | 'commercial' | 'repair'
 
-// Consumer pipeline stages (linear progression)
+// Roofing pipeline stages (linear progression)
 export type PipelineStage =
   | 'new_lead'
-  | 'contacted'
-  | 'consultation_scheduled'
-  | 'consultation_complete'
-  | 'proposal_sent'
+  | 'inspection_scheduled'
+  | 'inspection_complete'
+  | 'estimate_sent'
+  | 'insurance_filed'
+  | 'adjuster_meeting'
+  | 'approved'
   | 'contract_signed'
-  | 'in_construction'
+  | 'material_ordered'
+  | 'job_scheduled'
+  | 'job_in_progress'
   | 'completed'
+  | 'collected'
   | 'lost'
 
-// All pipeline stages in order (excluding lost which is a terminal state)
+// All pipeline stages in order
 export const PIPELINE_STAGES: PipelineStage[] = [
   'new_lead',
-  'contacted',
-  'consultation_scheduled',
-  'consultation_complete',
-  'proposal_sent',
+  'inspection_scheduled',
+  'inspection_complete',
+  'estimate_sent',
+  'insurance_filed',
+  'adjuster_meeting',
+  'approved',
   'contract_signed',
-  'in_construction',
+  'material_ordered',
+  'job_scheduled',
+  'job_in_progress',
   'completed',
+  'collected',
   'lost',
 ]
 
 // Stages that count as "pipeline" (potential deals not yet won)
 export const PIPELINE_ACTIVE_STAGES: PipelineStage[] = [
   'new_lead',
-  'contacted',
-  'consultation_scheduled',
-  'consultation_complete',
-  'proposal_sent',
+  'inspection_scheduled',
+  'inspection_complete',
+  'estimate_sent',
+  'insurance_filed',
+  'adjuster_meeting',
+  'approved',
 ]
 
 // Stages that count as "won" (deal converted to customer)
 export const WON_STAGES: PipelineStage[] = [
   'contract_signed',
-  'in_construction',
+  'material_ordered',
+  'job_scheduled',
+  'job_in_progress',
   'completed',
+  'collected',
 ]
 
 // Check if a deal is won (contract signed or beyond)
@@ -56,29 +71,50 @@ export function isDealInPipeline(stage: PipelineStage): boolean {
 
 export const STAGE_LABELS: Record<PipelineStage, string> = {
   new_lead: 'New Lead',
-  contacted: 'Contacted',
-  consultation_scheduled: 'Consultation Scheduled',
-  consultation_complete: 'Consultation Complete',
-  proposal_sent: 'Proposal Sent',
+  inspection_scheduled: 'Inspection Scheduled',
+  inspection_complete: 'Inspection Complete',
+  estimate_sent: 'Estimate Sent',
+  insurance_filed: 'Insurance Filed',
+  adjuster_meeting: 'Adjuster Meeting',
+  approved: 'Approved',
   contract_signed: 'Contract Signed',
-  in_construction: 'In Construction',
+  material_ordered: 'Material Ordered',
+  job_scheduled: 'Job Scheduled',
+  job_in_progress: 'Job In Progress',
   completed: 'Completed',
+  collected: 'Collected',
   lost: 'Lost',
 }
 
 export const STAGE_COLORS: Record<PipelineStage, string> = {
   new_lead: 'bg-brand-100 text-brand-800',
-  contacted: 'bg-cyan-100 text-cyan-800',
-  consultation_scheduled: 'bg-indigo-100 text-indigo-800',
-  consultation_complete: 'bg-violet-100 text-violet-800',
-  proposal_sent: 'bg-yellow-100 text-yellow-800',
-  contract_signed: 'bg-purple-100 text-purple-800',
-  in_construction: 'bg-orange-100 text-orange-800',
+  inspection_scheduled: 'bg-cyan-100 text-cyan-800',
+  inspection_complete: 'bg-sky-100 text-sky-800',
+  estimate_sent: 'bg-indigo-100 text-indigo-800',
+  insurance_filed: 'bg-violet-100 text-violet-800',
+  adjuster_meeting: 'bg-purple-100 text-purple-800',
+  approved: 'bg-yellow-100 text-yellow-800',
+  contract_signed: 'bg-orange-100 text-orange-800',
+  material_ordered: 'bg-amber-100 text-amber-800',
+  job_scheduled: 'bg-lime-100 text-lime-800',
+  job_in_progress: 'bg-teal-100 text-teal-800',
   completed: 'bg-green-100 text-green-800',
+  collected: 'bg-emerald-100 text-emerald-800',
   lost: 'bg-red-100 text-red-800',
 }
 
-export type LeadSource = 'cost_calculator' | 'pdf_download' | 'contact_form' | 'facebook_ad' | 'phone_call' | 'email' | 'calendar_booking' | 'other'
+export type LeadSource =
+  | 'website_estimate'
+  | 'facebook_ad'
+  | 'google_ads'
+  | 'door_knock'
+  | 'storm_lead'
+  | 'referral'
+  | 'insurance_adjuster'
+  | 'repeat_customer'
+  | 'yard_sign'
+  | 'phone_call'
+  | 'other'
 
 export type LifecycleStage = 'subscriber' | 'lead' | 'mql' | 'sql' | 'customer'
 
