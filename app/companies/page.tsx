@@ -46,7 +46,7 @@ async function getCompaniesWithStats(): Promise<CompanyWithStats[]> {
     if (d.company_id) {
       const stats = dealStatsByCompany.get(d.company_id) ?? { openCount: 0, revenue: 0 }
 
-      // Won = contract_signed, in_construction, completed
+      // Won = contract_signed, job_in_progress, completed
       if (isDealWon(d.stage)) {
         stats.revenue += d.value ?? 0
       } else if (d.stage !== 'lost') {

@@ -41,7 +41,7 @@ async function getPipelineStats(): Promise<PipelineStats> {
   const pipelineDeals = deals.filter(
     (d: any) => isDealInPipeline(d.stage)
   )
-  // Won: deals that have been converted (contract_signed, in_construction, completed)
+  // Won: deals that have been converted (contract_signed, job_in_progress, completed)
   const wonDeals = deals.filter(
     (d: any) => isDealWon(d.stage)
   )

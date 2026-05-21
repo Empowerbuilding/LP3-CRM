@@ -11,8 +11,8 @@ const supabaseAdmin = createSupabaseClient(
 )
 
 const VALID_STAGES: PipelineStage[] = [
-  'new_lead', 'contacted', 'consultation_scheduled', 'consultation_complete',
-  'proposal_sent', 'contract_signed', 'in_construction', 'completed', 'lost'
+  'new_lead', 'inspection_scheduled', 'inspection_complete', 'estimate_sent',
+  'approved', 'contract_signed', 'job_in_progress', 'completed', 'lost'
 ]
 
 // Check if moving to this stage should trigger "won" event

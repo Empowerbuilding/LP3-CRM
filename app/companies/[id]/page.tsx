@@ -170,7 +170,7 @@ export default async function CompanyDetailPage({
     notFound()
   }
 
-  // Calculate revenue from won deals (contract_signed, in_construction, completed)
+  // Calculate revenue from won deals (contract_signed, job_in_progress, completed)
   const totalRevenue = deals
     .filter((d) => isDealWon(d.stage))
     .reduce((sum, d) => sum + (d.value ?? 0), 0)

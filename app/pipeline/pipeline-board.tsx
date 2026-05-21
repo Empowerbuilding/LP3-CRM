@@ -30,12 +30,12 @@ function getInitials(name: string): string {
 
 const STAGE_DOT_COLORS: Record<PipelineStage, string> = {
   new_lead: 'bg-brand-500',
-  contacted: 'bg-cyan-500',
-  consultation_scheduled: 'bg-indigo-500',
-  consultation_complete: 'bg-violet-500',
-  proposal_sent: 'bg-yellow-500',
+  inspection_scheduled: 'bg-cyan-500',
+  inspection_complete: 'bg-indigo-500',
+  estimate_sent: 'bg-violet-500',
+  approved: 'bg-yellow-500',
   contract_signed: 'bg-purple-500',
-  in_construction: 'bg-orange-500',
+  job_in_progress: 'bg-orange-500',
   completed: 'bg-green-500',
   lost: 'bg-red-500',
 }
