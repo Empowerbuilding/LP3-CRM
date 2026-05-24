@@ -1,7 +1,7 @@
 // Enum types matching your business domain
 export type ClientType = 'builder' | 'consumer' | 'subcontractor' | 'engineer' | 'architect' | 'realtor'
 
-export type DealType = 'insurance_claim' | 'retail_cash' | 'financing' | 'commercial' | 'repair'
+export type DealType = 'insurance_claim' | 'retail_cash' | 'financing' | 'commercial' | 'repair' | 'new_construction'
 
 // Roofing pipeline stages (linear progression)
 export type PipelineStage =
