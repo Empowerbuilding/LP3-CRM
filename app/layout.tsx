@@ -14,6 +14,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'LP3 Roofing CRM',
   description: 'LP3 Roofing CRM',
+  icons: {
+    icon: '/icon.png',
+  },
 }
 
 export default async function RootLayout({
