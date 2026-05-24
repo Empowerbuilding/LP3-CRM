@@ -13,8 +13,8 @@ export interface ScoreResult {
 export function scoreContact(leadSource: string | null, noteText: string | null): ScoreResult {
   const source = (leadSource || '').toLowerCase()
 
-  if (source === 'insurance_claim' || source === 'storm_lead' || source === 'insurance_adjuster') {
-    return { score: 'hot', reason: 'Insurance/storm lead — high close rate' }
+  if (source === 'new_construction' || source === 'insurance_claim' || source === 'storm_lead' || source === 'insurance_adjuster') {
+    return { score: 'hot', reason: 'High-value lead — high close rate' }
   }
   if (source === 'calendar_booking') {
     return { score: 'hot', reason: 'Booked inspection — high intent' }
