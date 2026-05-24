@@ -118,7 +118,7 @@ export function Sidebar() {
         `}
       >
         {/* Logo */}
-        <div className="h-16 flex items-center justify-center px-4 border border-slate-800 bg-slate-900 relative">
+        <div className="h-16 flex items-center justify-center px-4 border border-slate-800 bg-black relative">
           <img
             src="https://dwwfegzxjccqfrtgspzx.supabase.co/storage/v1/object/public/assets/logo-v2.jpg"
             alt="LP3"
