@@ -35,6 +35,11 @@ const LEAD_SOURCE_LABELS: Record<LeadSource, string> = {
   email: 'Direct Email',
   storm_lead: 'Storm Lead',
   other: 'Other',
+  calendar_booking: 'Calendar Booking',
+  door_knock: 'Door Knock',
+  insurance_adjuster: 'Insurance Adjuster',
+  repeat_customer: 'Repeat Customer',
+  yard_sign: 'Yard Sign',
 }
 
 const CLIENT_TYPES: ClientType[] = [

@@ -114,6 +114,10 @@ export type LeadSource =
   | 'repeat_customer'
   | 'yard_sign'
   | 'phone_call'
+  | 'email'
+  | 'calendar_booking'
+  | 'other'
+  | 'phone_call'
   | 'other'
 
 export type LifecycleStage = 'subscriber' | 'lead' | 'mql' | 'sql' | 'customer'

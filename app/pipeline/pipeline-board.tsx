@@ -33,10 +33,15 @@ const STAGE_DOT_COLORS: Record<PipelineStage, string> = {
   inspection_scheduled: 'bg-cyan-500',
   inspection_complete: 'bg-indigo-500',
   estimate_sent: 'bg-violet-500',
+  insurance_filed: 'bg-amber-500',
+  adjuster_meeting: 'bg-emerald-500',
   approved: 'bg-yellow-500',
   contract_signed: 'bg-purple-500',
+  material_ordered: 'bg-teal-500',
+  job_scheduled: 'bg-lime-500',
   job_in_progress: 'bg-orange-500',
   completed: 'bg-green-500',
+  collected: 'bg-sky-500',
   lost: 'bg-red-500',
 }
 
