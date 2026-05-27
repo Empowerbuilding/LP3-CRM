@@ -81,7 +81,7 @@ export default function BookingPage() {
   const sendHeightUpdate = useCallback(() => {
     if (isEmbed && typeof document !== 'undefined') {
       const height = document.body.scrollHeight
-      postMessageToParent({ type: 'moderndwellings-booking-resize', height })
+      postMessageToParent({ type: 'lp3-booking-resize', height })
     }
   }, [isEmbed, postMessageToParent])
 
@@ -90,7 +90,7 @@ export default function BookingPage() {
     if (isEmbed && typeof window !== 'undefined') {
       // Send ready message
       const height = document.body.scrollHeight
-      postMessageToParent({ type: 'moderndwellings-booking-ready', height })
+      postMessageToParent({ type: 'lp3-booking-ready', height })
 
       // Set up resize observer
       const resizeObserver = new ResizeObserver(() => {

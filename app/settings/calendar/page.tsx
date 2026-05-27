@@ -204,7 +204,7 @@ export default function CalendarSettingsPage() {
   }
 
   async function handleCopyLink(slug: string) {
-    const url = `https://crm.moderndwellings.com/book/${slug}`
+    const url = `https://crm.lp3rc.com/book/${slug}`
     try {
       await navigator.clipboard.writeText(url)
       setToast({ message: 'Link copied to clipboard!', type: 'success' })
@@ -521,7 +521,7 @@ export default function CalendarSettingsPage() {
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Direct Link</h3>
                 <p className="text-xs text-gray-500 mb-2">Share this link directly with clients:</p>
                 <code className="block text-xs bg-gray-50 p-3 rounded-lg text-gray-700 overflow-x-auto">
-                  https://crm.moderndwellings.com/book/{meetingTypes[0]?.slug || 'your-slug'}
+                  https://crm.lp3rc.com/book/{meetingTypes[0]?.slug || 'your-slug'}
                 </code>
               </div>
 
@@ -530,7 +530,7 @@ export default function CalendarSettingsPage() {
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Popup Button</h3>
                 <p className="text-xs text-gray-500 mb-2">Opens booking in a modal overlay:</p>
                 <pre className="text-xs bg-gray-50 p-3 rounded-lg text-gray-700 overflow-x-auto whitespace-pre-wrap">
-{`<script src="https://crm.moderndwellings.com/booking-widget.js"></script>
+{`<script src="https://crm.lp3rc.com/booking-widget.js"></script>
 <button onclick="LP3RoofingBooking.open('${meetingTypes[0]?.slug || 'your-slug'}')">
   Schedule a Call
 </button>`}
@@ -543,7 +543,7 @@ export default function CalendarSettingsPage() {
                 <p className="text-xs text-gray-500 mb-2">Embed directly in your page:</p>
                 <pre className="text-xs bg-gray-50 p-3 rounded-lg text-gray-700 overflow-x-auto whitespace-pre-wrap">
 {`<div id="booking-container"></div>
-<script src="https://crm.moderndwellings.com/booking-widget.js"></script>
+<script src="https://crm.lp3rc.com/booking-widget.js"></script>
 <script>
   LP3RoofingBooking.render('${meetingTypes[0]?.slug || 'your-slug'}', '#booking-container');
 </script>`}

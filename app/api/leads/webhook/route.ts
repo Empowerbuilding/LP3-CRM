@@ -232,7 +232,7 @@ export async function POST(request: NextRequest) {
             clientUserAgent: clientUserAgent || null,
             externalId: contactId,
           },
-          eventSourceUrl: 'https://moderndwellings.com',
+          eventSourceUrl: 'https://lp3rc.com',
           customData: {
             leadEventSource: payload.source,
           },

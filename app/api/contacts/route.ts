@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
             lastName: contact.last_name,
             externalId: contact.id,
           },
-          eventSourceUrl: 'https://moderndwellings.com',
+          eventSourceUrl: 'https://lp3rc.com',
           customData: {
             leadEventSource: 'crm_manual_creation',
           },

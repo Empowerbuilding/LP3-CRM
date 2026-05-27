@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
               This Privacy Policy applies to the services provided by <strong>LP3 Roofing</strong>.
             </p>
             <p className="mt-2">
-              Contact Email: <a href="mailto:info@moderndwellings.com" className="text-brand-600 hover:underline">info@moderndwellings.com</a>
+              Contact Email: <a href="mailto:info@lp3rc.com" className="text-brand-600 hover:underline">info@lp3rc.com</a>
             </p>
           </section>
 
@@ -104,8 +104,8 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Data Deletion Requests</h2>
             <p>
               To request deletion of your personal data, please contact us at{' '}
-              <a href="mailto:info@moderndwellings.com" className="text-brand-600 hover:underline">
-                info@moderndwellings.com
+              <a href="mailto:info@lp3rc.com" className="text-brand-600 hover:underline">
+                info@lp3rc.com
               </a>{' '}
               with the subject line &quot;Data Deletion Request&quot;. Please include your name and email address so we can locate your records.
             </p>
@@ -141,7 +141,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <p className="mt-2">
               <strong>LP3 Roofing</strong><br />
-              Email: <a href="mailto:info@moderndwellings.com" className="text-brand-600 hover:underline">info@moderndwellings.com</a>
+              Email: <a href="mailto:info@lp3rc.com" className="text-brand-600 hover:underline">info@lp3rc.com</a>
             </p>
           </section>
         </div>

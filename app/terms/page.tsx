@@ -137,7 +137,7 @@ export default function TermsOfServicePage() {
             </p>
             <p className="mt-2">
               <strong>LP3 Roofing</strong><br />
-              Email: <a href="mailto:info@moderndwellings.com" className="text-brand-600 hover:underline">info@moderndwellings.com</a>
+              Email: <a href="mailto:info@lp3rc.com" className="text-brand-600 hover:underline">info@lp3rc.com</a>
             </p>
           </section>
         </div>
