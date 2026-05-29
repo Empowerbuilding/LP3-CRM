@@ -205,6 +205,36 @@ export interface Contact {
   lead_score_reason: string | null
   lead_score_updated_at: string | null
   meeting_scheduled_at: string | null
+  // Trestle enrichment
+  trestle_line_type: string | null
+  trestle_carrier: string | null
+  trestle_is_prepaid: boolean | null
+  trestle_is_commercial: boolean | null
+  trestle_owner_name: string | null
+  trestle_owner_type: string | null
+  trestle_owner_age_range: string | null
+  trestle_owner_gender: string | null
+  trestle_address: string | null
+  trestle_city: string | null
+  trestle_state: string | null
+  trestle_zip: string | null
+  trestle_emails: string[] | null
+  trestle_enriched_at: string | null
+  // ATTOM enrichment
+  attom_avm_value: number | null
+  attom_avm_high: number | null
+  attom_avm_low: number | null
+  attom_avm_score: number | null
+  attom_lot_acres: number | null
+  attom_sqft: number | null
+  attom_beds: number | null
+  attom_baths: number | null
+  attom_year_built: number | null
+  attom_owner_occupied: boolean | null
+  attom_prop_type: string | null
+  attom_last_sale_price: number | null
+  attom_last_sale_date: string | null
+  attom_enriched_at: string | null
   created_at?: string
   updated_at?: string
 }
