@@ -337,39 +337,10 @@ function formatContactNotes(source: LeadSource, metadata?: Record<string, unknow
   if (email) lines.push(`Email: ${email}`)
   if (phone) lines.push(`Phone: ${phone}`)
 
-  // Handle cost calculator specific fields
+  // Handle roofing estimate form fields
   if (source === 'website_estimate') {
-    // Build project summary line
-    const projectParts: string[] = []
-    if (metadata.bedrooms) projectParts.push(`${metadata.bedrooms}BR`)
-    if (metadata.bathrooms) projectParts.push(`${metadata.bathrooms}BA`)
-    if (metadata.living_sqft || metadata.living_space) projectParts.push(`${Number(metadata.living_sqft || metadata.living_space).toLocaleString()} sq ft`)
-    if (projectParts.length > 0) {
-      lines.push(`Project: ${projectParts.join(' • ')}`)
-    }
-
-    if (metadata.location) lines.push(`Location: ${metadata.location}`)
-    if (metadata.foundation) lines.push(`Foundation: ${metadata.foundation}`)
-    if (metadata.roof_pitch) lines.push(`Roof Pitch: ${metadata.roof_pitch}`)
-    if (metadata.interior_finish) lines.push(`Interior Finish: ${metadata.interior_finish}`)
-    if (metadata.garage_spaces || metadata.garage_bays) lines.push(`Garage Spaces: ${metadata.garage_spaces || metadata.garage_bays}`)
-    if (metadata.patio_sqft || metadata.patio_space) lines.push(`Patio: ${Number(metadata.patio_sqft || metadata.patio_space).toLocaleString()} sq ft`)
-    if (metadata.sustainability_score) lines.push(`Sustainability Score: ${metadata.sustainability_score}/10`)
-
-    // Estimated build costs by tier
-    const hasCosts = metadata.economy_owner_cost || metadata.economy_contractor_cost
-      || metadata.standard_owner_cost || metadata.standard_contractor_cost
-      || metadata.premium_owner_cost || metadata.premium_contractor_cost
-    if (hasCosts) {
-      lines.push('')
-      lines.push('--- Estimated Build Costs ---')
-      if (metadata.economy_owner_cost) lines.push(`Economy (Owner-Build): ${formatCurrency(Number(metadata.economy_owner_cost))}`)
-      if (metadata.economy_contractor_cost) lines.push(`Economy (w/ Contractor): ${formatCurrency(Number(metadata.economy_contractor_cost))}`)
-      if (metadata.standard_owner_cost) lines.push(`Standard (Owner-Build): ${formatCurrency(Number(metadata.standard_owner_cost))}`)
-      if (metadata.standard_contractor_cost) lines.push(`Standard (w/ Contractor): ${formatCurrency(Number(metadata.standard_contractor_cost))}`)
-      if (metadata.premium_owner_cost) lines.push(`Premium (Owner-Build): ${formatCurrency(Number(metadata.premium_owner_cost))}`)
-      if (metadata.premium_contractor_cost) lines.push(`Premium (w/ Contractor): ${formatCurrency(Number(metadata.premium_contractor_cost))}`)
-    }
+    if (metadata.service_type) lines.push(`Service: ${metadata.service_type}`)
+    if (metadata.form_type) {} // skip internal field
   } else {
     // For other sources, include any provided metadata
     const skipKeys = ['message', 'notes', 'comments']
