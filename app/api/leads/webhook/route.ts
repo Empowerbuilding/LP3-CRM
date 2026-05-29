@@ -291,6 +291,22 @@ export async function POST(request: NextRequest) {
       anonymous_id: payload.anonymous_id || null,
     })
 
+    // Fire SMS notification to client via n8n
+    if (process.env.N8N_NEW_LEAD_SMS_WEBHOOK) {
+      fetch(process.env.N8N_NEW_LEAD_SMS_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: payload.first_name,
+          last_name: payload.last_name,
+          email: payload.email,
+          phone: payload.phone || null,
+          source: payload.source,
+          metadata: payload.metadata || null,
+        }),
+      }).catch(err => console.error(`[${timestamp}] SMS webhook failed:`, err))
+    }
+
     return NextResponse.json({
       success: true,
       contact_id: contactId,
