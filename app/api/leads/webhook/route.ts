@@ -4,6 +4,129 @@ import type { LeadSource, LifecycleStage } from '@/lib/types'
 import { sendFacebookEvent } from '@/lib/facebook-conversions'
 import { scoreContact } from '@/lib/lead-scoring'
 
+// ============================================================
+// TRESTLE — Reverse Phone Enrichment
+// ============================================================
+async function enrichWithTrestle(phone: string, contactId: string): Promise<void> {
+  const trestleKey = process.env.TRESTLE_API_KEY
+  if (!trestleKey) return
+
+  const cleaned = phone.replace(/\D/g, '')
+  if (cleaned.length < 10) return
+
+  try {
+    const res = await fetch(`https://api.trestleiq.com/3.2/phone?phone=${cleaned}`, {
+      headers: { 'x-api-key': trestleKey },
+    })
+    if (!res.ok) return
+    const data = await res.json()
+    if (!data.is_valid) return
+
+    const owner = data.owners?.[0] || null
+    const addr = owner?.current_addresses?.[0] || null
+    const ownerEmails: string[] = owner?.emails?.map((e: { email_address: string }) => e.email_address).filter(Boolean) || []
+
+    const trestleData = {
+      trestle_line_type: data.line_type || null,
+      trestle_carrier: data.carrier || null,
+      trestle_is_prepaid: data.is_prepaid ?? null,
+      trestle_is_commercial: data.is_commercial ?? null,
+      trestle_owner_name: owner?.name || null,
+      trestle_owner_type: owner?.type || null,
+      trestle_owner_age_range: owner?.age_range || null,
+      trestle_owner_gender: owner?.gender || null,
+      trestle_address: addr ? [addr.street_line_1, addr.street_line_2].filter(Boolean).join(' ') || null : null,
+      trestle_city: addr?.city || null,
+      trestle_state: addr?.state_code || null,
+      trestle_zip: addr?.postal_code || null,
+      trestle_emails: ownerEmails.length > 0 ? ownerEmails : null,
+      trestle_enriched_at: new Date().toISOString(),
+    }
+
+    await supabase.from('contacts').update(trestleData).eq('id', contactId)
+    console.log(`[Trestle] Enriched contact ${contactId} — ${data.line_type || 'unknown line type'}`)
+
+    // Chain ATTOM if we got an address
+    if (trestleData.trestle_address && trestleData.trestle_city && trestleData.trestle_state) {
+      await enrichWithATTOM(
+        trestleData.trestle_address,
+        trestleData.trestle_city,
+        trestleData.trestle_state,
+        trestleData.trestle_zip || '',
+        contactId
+      )
+    }
+  } catch (err) {
+    console.error('[Trestle] Enrichment error:', err)
+  }
+}
+
+// ============================================================
+// ATTOM — Property Enrichment (chained from Trestle)
+// ============================================================
+async function enrichWithATTOM(address: string, city: string, state: string, zip: string, contactId: string): Promise<void> {
+  const attomKey = process.env.ATTOM_API_KEY
+  if (!attomKey) return
+
+  try {
+    const addr1 = encodeURIComponent(address)
+    const addr2 = encodeURIComponent(`${city} ${state} ${zip}`.trim())
+
+    // Step 1: Property detail ($0.25)
+    const detailRes = await fetch(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detail?address1=${addr1}&address2=${addr2}`, {
+      headers: { apikey: attomKey, Accept: 'application/json' },
+    })
+    const detailData = await detailRes.json()
+    const detailProp = detailData?.property?.[0]
+    if (!detailProp) return
+
+    const building = detailProp?.building || {}
+    const summary = detailProp?.summary || {}
+    const lot = detailProp?.lot || {}
+    const sale = detailProp?.sale?.saleAmountData || {}
+
+    // Step 2: AVM only for residential ($0.25) — skip for commercial/vacant
+    const propType: string = (summary.propertyType || '').toUpperCase()
+    const isResidential = propType.includes('SINGLE FAMILY') || propType.includes('CONDOMINIUM') || propType.includes('TOWNHOUSE') || propType.includes('COOPERATIVE') || propType.includes('DUPLEX') || propType.includes('TRIPLEX') || propType.includes('QUAD')
+
+    let avmProp = null
+    if (isResidential) {
+      const avmRes = await fetch(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/avm/detail?address1=${addr1}&address2=${addr2}`, {
+        headers: { apikey: attomKey, Accept: 'application/json' },
+      })
+      const avmData = await avmRes.json()
+      avmProp = avmData?.property?.[0]
+      console.log(`[ATTOM] Residential (${summary.propertyType}) — fetched AVM`)
+    } else {
+      console.log(`[ATTOM] Non-residential (${summary.propertyType}) — skipped AVM`)
+    }
+
+    const avm = avmProp?.avm?.amount || {}
+
+    const attomData = {
+      attom_avm_value: avm.value || null,
+      attom_avm_high: avm.high || null,
+      attom_avm_low: avm.low || null,
+      attom_avm_score: avmProp?.avm?.amount?.scr || null,
+      attom_lot_acres: lot.lotsize1 || null,
+      attom_sqft: building.size?.livingsize || null,
+      attom_beds: building.rooms?.beds || null,
+      attom_baths: building.rooms?.bathstotal || null,
+      attom_year_built: summary.yearbuilt || null,
+      attom_owner_occupied: summary.absenteeInd ? summary.absenteeInd.toLowerCase().includes('owner') : null,
+      attom_prop_type: summary.propertyType || null,
+      attom_last_sale_price: sale.saleamt || null,
+      attom_last_sale_date: detailProp?.sale?.saleTransDate || null,
+      attom_enriched_at: new Date().toISOString(),
+    }
+
+    await supabase.from('contacts').update(attomData).eq('id', contactId)
+    console.log(`[ATTOM] Enriched contact ${contactId} — ${summary.propertyType || 'unknown type'}, built ${summary.yearbuilt || '?'}, AVM $${avm.value?.toLocaleString() || 'N/A'}`)
+  } catch (err) {
+    console.error('[ATTOM] Enrichment error:', err)
+  }
+}
+
 // Use service role key for server-side operations (bypasses RLS)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -290,6 +413,13 @@ export async function POST(request: NextRequest) {
       },
       anonymous_id: payload.anonymous_id || null,
     })
+
+    // Fire Trestle + ATTOM enrichment chain (non-blocking, new contacts only)
+    if (payload.phone) {
+      enrichWithTrestle(payload.phone, contactId).catch(err =>
+        console.error(`[${timestamp}] Enrichment chain error (non-fatal):`, err)
+      )
+    }
 
     // Fire SMS notification to client via n8n
     if (process.env.N8N_NEW_LEAD_SMS_WEBHOOK) {
