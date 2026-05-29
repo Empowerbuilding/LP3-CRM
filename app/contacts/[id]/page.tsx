@@ -346,6 +346,92 @@ export default async function ContactDetailPage({
                     <dd className="text-gray-900">{contact.role}</dd>
                   </div>
                 )}
+                {/* Trestle Phone Intelligence */}
+                {contact.trestle_owner_name && (
+                  <div>
+                    <dt className="text-gray-500">📞 Phone Owner</dt>
+                    <dd className="text-gray-900">{contact.trestle_owner_name as string}</dd>
+                  </div>
+                )}
+                {contact.trestle_line_type && (
+                  <div>
+                    <dt className="text-gray-500">Line Type</dt>
+                    <dd className="text-gray-900">{contact.trestle_line_type as string}{contact.trestle_is_prepaid ? ' ⚠️ Prepaid' : ''}</dd>
+                  </div>
+                )}
+                {contact.trestle_carrier && (
+                  <div>
+                    <dt className="text-gray-500">Carrier</dt>
+                    <dd className="text-gray-900">{contact.trestle_carrier as string}</dd>
+                  </div>
+                )}
+                {contact.trestle_owner_age_range && (
+                  <div>
+                    <dt className="text-gray-500">Age Range</dt>
+                    <dd className="text-gray-900">{contact.trestle_owner_age_range as string}</dd>
+                  </div>
+                )}
+                {(contact.trestle_city || contact.trestle_state) && (
+                  <div>
+                    <dt className="text-gray-500">Phone Address</dt>
+                    <dd className="text-gray-900">{[contact.trestle_address, contact.trestle_city, contact.trestle_state, contact.trestle_zip].filter(Boolean).join(', ')}</dd>
+                  </div>
+                )}
+                {contact.trestle_emails && (contact.trestle_emails as string[]).length > 0 && (
+                  <div>
+                    <dt className="text-gray-500">Linked Emails</dt>
+                    <dd className="text-gray-900">{(contact.trestle_emails as string[]).join(', ')}</dd>
+                  </div>
+                )}
+                {/* ATTOM Property Data */}
+                {contact.attom_avm_value && (
+                  <div>
+                    <dt className="text-gray-500">🏠 Est. Home Value</dt>
+                    <dd className="text-gray-900 font-semibold text-green-700">${(contact.attom_avm_value as number).toLocaleString()}</dd>
+                  </div>
+                )}
+                {(contact.attom_avm_low && contact.attom_avm_high) && (
+                  <div>
+                    <dt className="text-gray-500">Value Range</dt>
+                    <dd className="text-gray-900">${(contact.attom_avm_low as number).toLocaleString()} – ${(contact.attom_avm_high as number).toLocaleString()}</dd>
+                  </div>
+                )}
+                {contact.attom_avm_score && (
+                  <div>
+                    <dt className="text-gray-500">AVM Confidence</dt>
+                    <dd className="text-gray-900">{contact.attom_avm_score as number}/100</dd>
+                  </div>
+                )}
+                {contact.attom_sqft && (
+                  <div>
+                    <dt className="text-gray-500">Home Size</dt>
+                    <dd className="text-gray-900">{(contact.attom_sqft as number).toLocaleString()} sqft — {contact.attom_beds as number}bd / {contact.attom_baths as number}ba</dd>
+                  </div>
+                )}
+                {contact.attom_lot_acres && (
+                  <div>
+                    <dt className="text-gray-500">Lot Size</dt>
+                    <dd className="text-gray-900">{(contact.attom_lot_acres as number).toFixed(2)} acres</dd>
+                  </div>
+                )}
+                {contact.attom_year_built && (
+                  <div>
+                    <dt className="text-gray-500">Year Built</dt>
+                    <dd className="text-gray-900">{contact.attom_year_built as number}</dd>
+                  </div>
+                )}
+                {contact.attom_last_sale_price && (
+                  <div>
+                    <dt className="text-gray-500">Last Sale</dt>
+                    <dd className="text-gray-900">${(contact.attom_last_sale_price as number).toLocaleString()}{contact.attom_last_sale_date ? ` (${contact.attom_last_sale_date})` : ''}</dd>
+                  </div>
+                )}
+                {contact.attom_prop_type && (
+                  <div>
+                    <dt className="text-gray-500">Property Type</dt>
+                    <dd className="text-gray-900">{contact.attom_prop_type as string}{contact.attom_owner_occupied ? ' (Owner Occ.)' : ''}</dd>
+                  </div>
+                )}
                 <div>
                   <dt className="text-gray-500">Created</dt>
                   <dd className="text-gray-900">{formatDate(contact.created_at)}</dd>
