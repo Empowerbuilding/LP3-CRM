@@ -30,12 +30,12 @@ export const webhookConfig = {
 }
 
 /**
- * Google Calendar OAuth configuration
+ * Google Calendar OAuth configuration (optional — not used by LP3)
  */
 export const googleCalendarConfig = {
-  clientId: getEnvVar('GOOGLE_CLIENT_ID'),
-  clientSecret: getEnvVar('GOOGLE_CLIENT_SECRET'),
-  redirectUri: getEnvVar('GOOGLE_REDIRECT_URI'),
+  clientId: getEnvVar('GOOGLE_CLIENT_ID', false),
+  clientSecret: getEnvVar('GOOGLE_CLIENT_SECRET', false),
+  redirectUri: getEnvVar('GOOGLE_REDIRECT_URI', false),
 }
 
 /**
