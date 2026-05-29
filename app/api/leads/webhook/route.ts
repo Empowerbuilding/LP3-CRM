@@ -4,23 +4,52 @@ import type { LeadSource, LifecycleStage } from '@/lib/types'
 import { sendFacebookEvent } from '@/lib/facebook-conversions'
 import { scoreContact } from '@/lib/lead-scoring'
 
+// Lead context passed through the enrichment chain for SMS
+interface LeadSmsContext {
+  first_name: string
+  last_name: string
+  email: string
+  phone?: string | null
+  service_type?: string | null
+  message?: string | null
+}
+
+// ============================================================
+// SMS — fires at the end of the enrichment chain
+// ============================================================
+async function sendLeadSms(lead: LeadSmsContext, trestle?: Record<string, unknown>, attom?: Record<string, unknown>): Promise<void> {
+  const webhook = process.env.N8N_NEW_LEAD_SMS_WEBHOOK
+  if (!webhook) return
+  await fetch(webhook, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ lead, trestle: trestle || null, attom: attom || null }),
+  }).catch(err => console.error('[SMS] n8n webhook error:', err))
+}
+
 // ============================================================
 // TRESTLE — Reverse Phone Enrichment
 // ============================================================
-async function enrichWithTrestle(phone: string, contactId: string): Promise<void> {
+async function enrichWithTrestle(phone: string, contactId: string, smsCtx: LeadSmsContext): Promise<void> {
   const trestleKey = process.env.TRESTLE_API_KEY
-  if (!trestleKey) return
+  if (!trestleKey) {
+    await sendLeadSms(smsCtx)
+    return
+  }
 
   const cleaned = phone.replace(/\D/g, '')
-  if (cleaned.length < 10) return
+  if (cleaned.length < 10) {
+    await sendLeadSms(smsCtx)
+    return
+  }
 
   try {
     const res = await fetch(`https://api.trestleiq.com/3.2/phone?phone=${cleaned}`, {
       headers: { 'x-api-key': trestleKey },
     })
-    if (!res.ok) return
+    if (!res.ok) { await sendLeadSms(smsCtx); return }
     const data = await res.json()
-    if (!data.is_valid) return
+    if (!data.is_valid) { await sendLeadSms(smsCtx); return }
 
     const owner = data.owners?.[0] || null
     const addr = owner?.current_addresses?.[0] || null
@@ -32,9 +61,7 @@ async function enrichWithTrestle(phone: string, contactId: string): Promise<void
       trestle_is_prepaid: data.is_prepaid ?? null,
       trestle_is_commercial: data.is_commercial ?? null,
       trestle_owner_name: owner?.name || null,
-      trestle_owner_type: owner?.type || null,
       trestle_owner_age_range: owner?.age_range || null,
-      trestle_owner_gender: owner?.gender || null,
       trestle_address: addr ? [addr.street_line_1, addr.street_line_2].filter(Boolean).join(' ') || null : null,
       trestle_city: addr?.city || null,
       trestle_state: addr?.state_code || null,
@@ -44,29 +71,37 @@ async function enrichWithTrestle(phone: string, contactId: string): Promise<void
     }
 
     await supabase.from('contacts').update(trestleData).eq('id', contactId)
-    console.log(`[Trestle] Enriched contact ${contactId} — ${data.line_type || 'unknown line type'}`)
+    console.log(`[Trestle] Enriched contact ${contactId} — ${data.line_type || 'unknown'}`)
 
-    // Chain ATTOM if we got an address
+    // Chain ATTOM if we got an address, otherwise send SMS now
     if (trestleData.trestle_address && trestleData.trestle_city && trestleData.trestle_state) {
       await enrichWithATTOM(
         trestleData.trestle_address,
         trestleData.trestle_city,
         trestleData.trestle_state,
         trestleData.trestle_zip || '',
-        contactId
+        contactId,
+        smsCtx,
+        trestleData
       )
+    } else {
+      await sendLeadSms(smsCtx, trestleData)
     }
   } catch (err) {
     console.error('[Trestle] Enrichment error:', err)
+    await sendLeadSms(smsCtx)
   }
 }
 
 // ============================================================
 // ATTOM — Property Enrichment (chained from Trestle)
 // ============================================================
-async function enrichWithATTOM(address: string, city: string, state: string, zip: string, contactId: string): Promise<void> {
+async function enrichWithATTOM(
+  address: string, city: string, state: string, zip: string,
+  contactId: string, smsCtx: LeadSmsContext, trestleData: Record<string, unknown>
+): Promise<void> {
   const attomKey = process.env.ATTOM_API_KEY
-  if (!attomKey) return
+  if (!attomKey) { await sendLeadSms(smsCtx, trestleData); return }
 
   try {
     const addr1 = encodeURIComponent(address)
@@ -78,14 +113,14 @@ async function enrichWithATTOM(address: string, city: string, state: string, zip
     })
     const detailData = await detailRes.json()
     const detailProp = detailData?.property?.[0]
-    if (!detailProp) return
+    if (!detailProp) { await sendLeadSms(smsCtx, trestleData); return }
 
     const building = detailProp?.building || {}
     const summary = detailProp?.summary || {}
     const lot = detailProp?.lot || {}
     const sale = detailProp?.sale?.saleAmountData || {}
 
-    // Step 2: AVM only for residential ($0.25) — skip for commercial/vacant
+    // Step 2: AVM only for residential ($0.25)
     const propType: string = (summary.propertyType || '').toUpperCase()
     const isResidential = propType.includes('SINGLE FAMILY') || propType.includes('CONDOMINIUM') || propType.includes('TOWNHOUSE') || propType.includes('COOPERATIVE') || propType.includes('DUPLEX') || propType.includes('TRIPLEX') || propType.includes('QUAD')
 
@@ -94,8 +129,7 @@ async function enrichWithATTOM(address: string, city: string, state: string, zip
       const avmRes = await fetch(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/avm/detail?address1=${addr1}&address2=${addr2}`, {
         headers: { apikey: attomKey, Accept: 'application/json' },
       })
-      const avmData = await avmRes.json()
-      avmProp = avmData?.property?.[0]
+      avmProp = (await avmRes.json())?.property?.[0]
       console.log(`[ATTOM] Residential (${summary.propertyType}) — fetched AVM`)
     } else {
       console.log(`[ATTOM] Non-residential (${summary.propertyType}) — skipped AVM`)
@@ -107,8 +141,6 @@ async function enrichWithATTOM(address: string, city: string, state: string, zip
       attom_avm_value: avm.value || null,
       attom_avm_high: avm.high || null,
       attom_avm_low: avm.low || null,
-      attom_avm_score: avmProp?.avm?.amount?.scr || null,
-      attom_lot_acres: lot.lotsize1 || null,
       attom_sqft: building.size?.livingsize || null,
       attom_beds: building.rooms?.beds || null,
       attom_baths: building.rooms?.bathstotal || null,
@@ -116,14 +148,17 @@ async function enrichWithATTOM(address: string, city: string, state: string, zip
       attom_owner_occupied: summary.absenteeInd ? summary.absenteeInd.toLowerCase().includes('owner') : null,
       attom_prop_type: summary.propertyType || null,
       attom_last_sale_price: sale.saleamt || null,
-      attom_last_sale_date: detailProp?.sale?.saleTransDate || null,
       attom_enriched_at: new Date().toISOString(),
     }
 
     await supabase.from('contacts').update(attomData).eq('id', contactId)
-    console.log(`[ATTOM] Enriched contact ${contactId} — ${summary.propertyType || 'unknown type'}, built ${summary.yearbuilt || '?'}, AVM $${avm.value?.toLocaleString() || 'N/A'}`)
+    console.log(`[ATTOM] Enriched contact ${contactId} — built ${summary.yearbuilt || '?'}, AVM $${avm.value?.toLocaleString() || 'N/A'}`)
+
+    // SMS fires here with full enrichment data
+    await sendLeadSms(smsCtx, trestleData, attomData)
   } catch (err) {
     console.error('[ATTOM] Enrichment error:', err)
+    await sendLeadSms(smsCtx, trestleData)
   }
 }
 
@@ -414,27 +449,26 @@ export async function POST(request: NextRequest) {
       anonymous_id: payload.anonymous_id || null,
     })
 
-    // Fire Trestle + ATTOM enrichment chain (non-blocking, new contacts only)
-    if (payload.phone) {
-      enrichWithTrestle(payload.phone, contactId).catch(err =>
-        console.error(`[${timestamp}] Enrichment chain error (non-fatal):`, err)
-      )
+    // Build SMS context to carry through enrichment chain
+    const smsCtx: LeadSmsContext = {
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      email: payload.email,
+      phone: payload.phone || null,
+      service_type: (payload.metadata?.service_type as string) || null,
+      message: (payload.metadata?.message as string) || null,
     }
 
-    // Fire SMS notification to client via n8n
-    if (process.env.N8N_NEW_LEAD_SMS_WEBHOOK) {
-      fetch(process.env.N8N_NEW_LEAD_SMS_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          first_name: payload.first_name,
-          last_name: payload.last_name,
-          email: payload.email,
-          phone: payload.phone || null,
-          source: payload.source,
-          metadata: payload.metadata || null,
-        }),
-      }).catch(err => console.error(`[${timestamp}] SMS webhook failed:`, err))
+    // Fire enrichment chain — SMS fires at the end with full data
+    // If no phone, send SMS immediately (no enrichment possible)
+    if (payload.phone) {
+      enrichWithTrestle(payload.phone, contactId, smsCtx).catch(err =>
+        console.error(`[${timestamp}] Enrichment chain error (non-fatal):`, err)
+      )
+    } else {
+      sendLeadSms(smsCtx).catch(err =>
+        console.error(`[${timestamp}] SMS error (non-fatal):`, err)
+      )
     }
 
     return NextResponse.json({
