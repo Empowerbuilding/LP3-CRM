@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-browser'
 import type { NoteWithAuthor } from '@/lib/types'
 
 const NOTE_MAX_HEIGHT = 80 // pixels - roughly 4 lines
@@ -130,6 +130,7 @@ export function NotesSection({
   notes,
   currentUserId,
 }: NotesSectionProps) {
+  const supabase = createClient()
   const router = useRouter()
   const [showForm, setShowForm] = useState(false)
   const [content, setContent] = useState('')
