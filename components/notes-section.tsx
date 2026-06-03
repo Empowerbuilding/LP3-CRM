@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 import type { NoteWithAuthor } from '@/lib/types'
 
 const NOTE_MAX_HEIGHT = 80 // pixels - roughly 4 lines
@@ -130,6 +131,7 @@ export function NotesSection({
   currentUserId,
 }: NotesSectionProps) {
   const router = useRouter()
+
   const [showForm, setShowForm] = useState(false)
   const [content, setContent] = useState('')
   const [saving, setSaving] = useState(false)
@@ -156,18 +158,15 @@ export function NotesSection({
 
     setSaving(true)
     try {
-      const res = await fetch('/api/notes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contact_id: contactId || null,
-          deal_id: dealId || null,
-          company_id: companyId || null,
-          content: content.trim(),
-        }),
+      const { error } = await (supabase.from('notes') as any).insert({
+        contact_id: contactId || null,
+        deal_id: dealId || null,
+        company_id: companyId || null,
+        content: content.trim(),
+        created_by: currentUserId || null,
       })
-      const result = await res.json()
-      if (!res.ok) throw new Error(result.error || 'Failed to save note')
+
+      if (error) throw error
 
       setContent('')
       setShowForm(false)
@@ -194,13 +193,11 @@ export function NotesSection({
 
     setSaving(true)
     try {
-      const res = await fetch('/api/notes', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: noteId, content: editContent.trim() }),
-      })
-      const result = await res.json()
-      if (!res.ok) throw new Error(result.error || 'Failed to update note')
+      const { error } = await (supabase.from('notes') as any)
+        .update({ content: editContent.trim() })
+        .eq('id', noteId)
+
+      if (error) throw error
 
       setEditingId(null)
       setEditContent('')
@@ -217,9 +214,11 @@ export function NotesSection({
 
     setDeletingId(noteId)
     try {
-      const res = await fetch(`/api/notes?id=${noteId}`, { method: 'DELETE' })
-      const result = await res.json()
-      if (!res.ok) throw new Error(result.error || 'Failed to delete note')
+      const { error } = await (supabase.from('notes') as any)
+        .delete()
+        .eq('id', noteId)
+
+      if (error) throw error
 
       router.refresh()
     } catch (err) {
