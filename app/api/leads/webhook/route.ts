@@ -488,45 +488,53 @@ export async function POST(request: NextRequest) {
 
 // Format metadata into nicely structured notes for contact
 function formatContactNotes(source: LeadSource, metadata?: Record<string, unknown>, email?: string, phone?: string): string {
-  if (!metadata || Object.keys(metadata).length === 0) {
-    const lines = [`Source: ${formatSource(source)}`]
-    if (email) lines.push(`Email: ${email}`)
-    if (phone) lines.push(`Phone: ${phone}`)
-    return lines.join('\n')
-  }
-
   const lines: string[] = []
 
-  // Add source
   lines.push(`Source: ${formatSource(source)}`)
   if (email) lines.push(`Email: ${email}`)
   if (phone) lines.push(`Phone: ${phone}`)
 
-  // Handle roofing estimate form fields
+  if (!metadata || Object.keys(metadata).length === 0) {
+    return lines.join('\n')
+  }
+
   if (source === 'website_estimate') {
     if (metadata.service_type) lines.push(`Service: ${metadata.service_type}`)
-    if (metadata.form_type) {} // skip internal field
+  } else if (source === 'facebook_lead_ad' || source === 'facebook_ad') {
+    // Only show meaningful form fields — skip internal tracking keys
+    const FB_FIELD_MAP: Record<string, string> = {
+      property_type: 'Property Type',
+      reason_for_inquiry: 'Reason for Inquiry',
+      approximate_age_of_roof: 'Roof Age',
+      roof_age: 'Roof Age',
+      do_you_suspect_recent_storm_damage_: 'Storm Damage',
+      storm_damage: 'Storm Damage',
+      are_you_the_homeowner_property_owner_: 'Homeowner',
+      is_homeowner: 'Homeowner',
+      timeline_for_project_: 'Timeline',
+      timeline: 'Timeline',
+      city: 'City',
+    }
+    for (const [key, label] of Object.entries(FB_FIELD_MAP)) {
+      const val = metadata[key]
+      if (val !== null && val !== undefined && val !== '') {
+        lines.push(`${label}: ${val}`)
+      }
+    }
   } else {
-    // For other sources, include any provided metadata
-    const skipKeys = ['message', 'notes', 'comments']
-
+    // Generic: include any metadata that isn't internal tracking
+    const skipKeys = ['message', 'notes', 'comments', 'form_id', 'form_name', 'ad_name', 'adset_name', 'campaign_name', 'raw_form_data']
     for (const [key, value] of Object.entries(metadata)) {
       if (skipKeys.includes(key.toLowerCase())) continue
       if (value === null || value === undefined || value === '') continue
-
-      const formattedKey = formatKey(key)
-      const formattedValue = typeof value === 'number' && key.toLowerCase().includes('price')
-        ? formatCurrency(value)
-        : String(value)
-
-      lines.push(`${formattedKey}: ${formattedValue}`)
+      lines.push(`${formatKey(key)}: ${String(value)}`)
     }
   }
 
-  // Add message/notes at the end if present
+  // Message/notes always at the end
   const message = metadata.message || metadata.notes || metadata.comments
   if (message) {
-    lines.push(``)
+    lines.push('')
     lines.push(`Message: ${message}`)
   }
 
