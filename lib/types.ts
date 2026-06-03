@@ -106,6 +106,7 @@ export const STAGE_COLORS: Record<PipelineStage, string> = {
 export type LeadSource =
   | 'website_estimate'
   | 'facebook_ad'
+  | 'facebook_lead_ad'
   | 'google_ads'
   | 'door_knock'
   | 'storm_lead'

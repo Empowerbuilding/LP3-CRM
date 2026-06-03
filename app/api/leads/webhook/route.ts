@@ -203,6 +203,7 @@ function getClientTypeForSource(source: LeadSource): 'consumer' | null {
     'phone_call',
     'referral',
     'facebook_ad',
+    'facebook_lead_ad',
   ]
   return consumerSources.includes(source) ? 'consumer' : null
 }
@@ -556,6 +557,7 @@ function formatSource(source: string): string {
     google_ads: 'Google Ads',
     referral: 'Referral',
     facebook_ad: 'Facebook Ad',
+    facebook_lead_ad: 'Facebook Lead Ad',
     phone_call: 'Direct Phone Call',
     email: 'Direct Email',
     other: 'Other',
